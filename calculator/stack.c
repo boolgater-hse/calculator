@@ -15,7 +15,7 @@ char pop(STACK* stack)
 
 char peek(STACK* stack)
 {
-    if (stack->pos == 0) return;
+    if (stack->pos == 0) return '!';
     return stack->data[stack->pos - 1];
 }
 
