@@ -53,7 +53,7 @@ int main()
     opr.pos = 0;
     char nums[SIZE] = { 0 };
     int ans[SIZE] = { 0 };
-    int pos = 0, subPos = 0;
+    int pos = 0;
     fgets(math, SIZE, stdin);
     printf("Expression:\n");
     printf("%s\n", math);
@@ -140,7 +140,7 @@ int main()
     printf("Result:\n");
 
     pos = 0;
-    subPos = 0;
+    int subPos = 0;
 
     ////<--------------------CALCULATION-------------------->////
 
