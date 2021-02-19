@@ -16,16 +16,12 @@ int priority(int symb)
     {
     case '+':
         return 1;
-        break;
     case '-':
         return 1;
-        break;
     case '*':
         return 2;
-        break;
     case '/':
         return 2;
-        break;
     }
     return 0;
 }
@@ -52,7 +48,7 @@ int main()
     STACK opr; // STACK
     opr.pos = 0;
     char nums[SIZE] = { 0 };
-    int ans[SIZE] = { 0 };
+    float ans[SIZE] = { 0 };
     int pos = 0;
     fgets(math, SIZE, stdin);
     printf("Expression:\n");
@@ -183,5 +179,5 @@ int main()
         ans[subPos++] = toNum(nums);
         pos = 0;
     }
-    printf("%d", ans[0]);
+    printf("%.3f", ans[0]);
 }
