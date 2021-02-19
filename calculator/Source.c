@@ -7,6 +7,7 @@
 #define SIZE 101
 
 // Ilya Sergeevich, have a great day!
+// Hello
 
 ////<--------------------STACK FUNCS-------------------->////
 
