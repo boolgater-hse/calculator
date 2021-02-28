@@ -6,8 +6,6 @@
 
 #define SIZE 101
 
-////<--------------------STACK FUNCS-------------------->////
-
 int priority(int symb)
 {
     switch (symb)
@@ -46,9 +44,10 @@ int main()
 {
     char math[SIZE] = { 0 }, pol[SIZE] = { 0 };
     STACK opr; // STACK
+    memset(opr.data, 0, sizeof(SIZE));
     opr.pos = 0;
     char nums[SIZE] = { 0 };
-    float ans[SIZE] = { 0 };
+    long double ans[SIZE] = { 0 };
     int pos = 0;
     fgets(math, SIZE, stdin);
     printf("Expression:\n");
@@ -56,9 +55,13 @@ int main()
     printf("Reverse Polish Notation:\n");
 
     ////<--------------------POLISH-------------------->////
-
+   
     for (int i = 0; i < strlen(math); ++i)
     {
+        if (math[i] == ' ')
+        {
+            math[i] = '0';
+        }
         if (math[i] >= '0' && math[i] <= '9' || math[i] >= 'a' && math[i] <= 'z')
         {
             pol[pos++] = math[i];
@@ -105,7 +108,10 @@ int main()
         }
         if (math[i] == ')')
         {
-            pol[pos++] = ' ';
+            if (pol[pos - 1] != ' ')
+            {
+                pol[pos++] = ' ';
+            }
             while (peek(&opr) != '(')
             {
                 pol[pos++] = peek(&opr);
@@ -138,7 +144,8 @@ int main()
     pos = 0;
     int subPos = 0;
 
-    exit(0);
+    //exit(0);
+
     ////<--------------------CALCULATION-------------------->////
 
     for (int i = 0; i < strlen(pol) - 1; ++i)
@@ -147,12 +154,12 @@ int main()
         {
             nums[pos++] = pol[i];
         }
-        if (pol[i] == ' ' && pol[i - 1] != '+' && pol[i - 1] != '-' && pol[i - 1] != '*' && pol[i - 1] != '/')
+        if (pol[i] == ' ' && pol[i - 1] != '+' && pol[i - 1] != '-' && pol[i - 1] != '*' && pol[i - 1] != '/' && pol[i - 1] != '*')
         {
             ans[subPos++] = toNum(nums);
             pos = 0;
         }
-        if (pol[i] != '+' || pol[i] != '-' || pol[i] != '*' || pol[i] != '/')
+        if (pol[i] != '+' || pol[i] != '-' || pol[i] != '*' || pol[i] != '/' || pol[i] != '^')
         {
             switch (pol[i])
             {
@@ -170,6 +177,10 @@ int main()
                 break;
             case '/':
                 ans[subPos - 2] = ans[subPos - 2] / ans[subPos - 1];
+                subPos--;
+                break;
+            case '^':
+                ans[subPos - 2] = pow(ans[subPos - 2], ans[subPos - 1]);
                 subPos--;
                 break;
             }
