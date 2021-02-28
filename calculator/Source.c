@@ -4,7 +4,7 @@
 #include <math.h>
 #include "stack.h"
 
-#define SIZE 101
+#define SIZE 1001
 
 int priority(int symb)
 {
@@ -24,20 +24,28 @@ int priority(int symb)
     return 0;
 }
 
-int toNum(char* str)
+//int toNum(char* str)
+//{
+//    int ret = 0, mult, count = 0;
+//    mult = strlen(str) - 1;
+//    for (int i = 0; i < strlen(str); i++)
+//    {
+//        ret = ret + (str[i] - '0') * pow(10, mult);
+//        mult--;
+//    }
+//    for (int i = strlen(str); i >= 0; --i)
+//    {
+//        str[i] = '\0';
+//    }
+//    return ret;
+//}
+
+void clear(char* str)
 {
-    int ret = 0, mult, count = 0;
-    mult = strlen(str) - 1;
-    for (int i = 0; i < strlen(str); i++)
-    {
-        ret = ret + (str[i] - '0') * pow(10, mult);
-        mult--;
-    }
     for (int i = strlen(str); i >= 0; --i)
     {
         str[i] = '\0';
     }
-    return ret;
 }
 
 int main()
@@ -47,7 +55,7 @@ int main()
     memset(opr.data, 0, sizeof(SIZE));
     opr.pos = 0;
     char nums[SIZE] = { 0 };
-    long double ans[SIZE] = { 0 };
+    double ans[SIZE] = { 0 };
     int pos = 0;
     fgets(math, SIZE, stdin);
     printf("Expression:\n");
@@ -58,7 +66,7 @@ int main()
    
     for (int i = 0; i < strlen(math); ++i)
     {
-        if (math[i] >= '0' && math[i] <= '9' || math[i] >= 'a' && math[i] <= 'z')
+        if (math[i] >= '0' && math[i] <= '9' || math[i] >= 'a' && math[i] <= 'z' || math[i] == '.')
         {
             pol[pos++] = math[i];
         }
@@ -146,13 +154,14 @@ int main()
 
     for (int i = 0; i < strlen(pol) - 1; ++i)
     {
-        if (pol[i] >= '0' && pol[i] <= '9')
+        if (pol[i] >= '0' && pol[i] <= '9' || pol[i] == '.')
         {
             nums[pos++] = pol[i];
         }
         if (pol[i] == ' ' && pol[i - 1] != '+' && pol[i - 1] != '-' && pol[i - 1] != '*' && pol[i - 1] != '/' && pol[i - 1] != '*')
         {
-            ans[subPos++] = toNum(nums);
+            ans[subPos++] = atof(nums);
+            clear(nums);
             pos = 0;
         }
         if (pol[i] != '+' || pol[i] != '-' || pol[i] != '*' || pol[i] != '/' || pol[i] != '^')
@@ -184,7 +193,8 @@ int main()
     }
     if (subPos == 0)
     {
-        ans[subPos++] = toNum(nums);
+        ans[subPos++] = atof(nums);
+        clear(nums);
         pos = 0;
     }
     printf("%.3f", ans[0]);
