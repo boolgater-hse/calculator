@@ -6,8 +6,6 @@
 
 #define SIZE 101
 
-// Ilya Sergeevich, have a great day!
-
 ////<--------------------STACK FUNCS-------------------->////
 
 int priority(int symb)
@@ -22,6 +20,8 @@ int priority(int symb)
         return 2;
     case '/':
         return 2;
+    case '^':
+        return 3;
     }
     return 0;
 }
@@ -59,11 +59,11 @@ int main()
 
     for (int i = 0; i < strlen(math); ++i)
     {
-        if (math[i] >= '0' && math[i] <= '9')
+        if (math[i] >= '0' && math[i] <= '9' || math[i] >= 'a' && math[i] <= 'z')
         {
             pol[pos++] = math[i];
         }
-        if (math[i] == '+' || math[i] == '-' || math[i] == '*' || math[i] == '/')
+        if (math[i] == '+' || math[i] == '-' || math[i] == '*' || math[i] == '/' || math[i] == '^')
         {
             if (pol[pos - 1] != ' ')
             {
@@ -73,7 +73,7 @@ int main()
             {
                 push(&opr, math[i]);
             }
-            else if (priority(math[i]) > priority(peek(&opr)))
+            else if (priority(math[i]) > priority(peek(&opr)) || priority(math[i]) == 3)
             {
                 push(&opr, math[i]);
             }
@@ -138,6 +138,7 @@ int main()
     pos = 0;
     int subPos = 0;
 
+    exit(0);
     ////<--------------------CALCULATION-------------------->////
 
     for (int i = 0; i < strlen(pol) - 1; ++i)
