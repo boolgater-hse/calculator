@@ -58,10 +58,6 @@ int main()
    
     for (int i = 0; i < strlen(math); ++i)
     {
-        if (math[i] == ' ')
-        {
-            math[i] = '0';
-        }
         if (math[i] >= '0' && math[i] <= '9' || math[i] >= 'a' && math[i] <= 'z')
         {
             pol[pos++] = math[i];
