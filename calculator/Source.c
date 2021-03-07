@@ -4,7 +4,20 @@
 #include <math.h>
 #include "stack.h"
 
-#define SIZE 1001
+#define SIZE 101
+
+typedef struct var
+{
+    char varName[SIZE];
+    double varVal;
+} VAR;
+
+typedef struct data
+{
+    char eq[SIZE];
+    VAR variables[SIZE];
+    int varCount;
+} DATA;
 
 int priority(int symb)
 {
@@ -66,9 +79,10 @@ int main()
    
     for (int i = 0; i < strlen(math); ++i)
     {
-        if (math[i] >= '0' && math[i] <= '9' || math[i] >= 'a' && math[i] <= 'z' || math[i] == '.')
+        if (math[i] >= '0' && math[i] <= '9' || math[i] >= 'a' && math[i] <= 'z' || math[i] == '.' || math[i] == '-'&& math[i-1] == ' ')
         {
             pol[pos++] = math[i];
+            continue;
         }
         if (math[i] == '+' || math[i] == '-' || math[i] == '*' || math[i] == '/' || math[i] == '^')
         {
@@ -154,7 +168,7 @@ int main()
 
     for (int i = 0; i < strlen(pol) - 1; ++i)
     {
-        if (pol[i] >= '0' && pol[i] <= '9' || pol[i] == '.')
+        if (pol[i] >= '0' && pol[i] <= '9' || pol[i] == '.' || pol[i] == '-' && pol[i+1] != ' ')
         {
             nums[pos++] = pol[i];
         }
@@ -164,7 +178,7 @@ int main()
             clear(nums);
             pos = 0;
         }
-        if (pol[i] != '+' || pol[i] != '-' || pol[i] != '*' || pol[i] != '/' || pol[i] != '^')
+        if (pol[i] == '+' || pol[i] == '-' && pol[i+1] == ' ' || pol[i] == '*' || pol[i] == '/' || pol[i] == '^')
         {
             switch (pol[i])
             {
@@ -197,5 +211,5 @@ int main()
         clear(nums);
         pos = 0;
     }
-    printf("%.3f", ans[0]);
+    printf("%.4f", ans[0]);
 }
