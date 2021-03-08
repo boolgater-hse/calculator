@@ -36,3 +36,6 @@ well = 93.3
 2^pow^test
 pow = 2
 test = 2
+
+77+pepega-(28-70)*(88/228)
+pepega = -39.45
