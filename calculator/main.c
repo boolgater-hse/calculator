@@ -78,8 +78,6 @@ int main()
     DATA data[SIZE];
     int dataAmount = makeData(data, in);
 
-    ////<--------------------POLISH-------------------->////
-
     for (int inputCount = 0; inputCount < dataAmount; ++inputCount)
     {
         char math[SIZE] = { 0 }, pol[SIZE] = { 0 };
@@ -91,6 +89,8 @@ int main()
         int pos = 0;
 
         strcpy(math, data[inputCount].eq);
+
+        ////<------------------POLISH NOTATION------------------>////
 
         for (int i = 0; i < strlen(math); ++i)
         {
