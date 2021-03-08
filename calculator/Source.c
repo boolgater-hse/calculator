@@ -37,21 +37,28 @@ int priority(int symb)
     return 0;
 }
 
-//int toNum(char* str)
-//{
-//    int ret = 0, mult, count = 0;
-//    mult = strlen(str) - 1;
-//    for (int i = 0; i < strlen(str); i++)
-//    {
-//        ret = ret + (str[i] - '0') * pow(10, mult);
-//        mult--;
-//    }
-//    for (int i = strlen(str); i >= 0; --i)
-//    {
-//        str[i] = '\0';
-//    }
-//    return ret;
-//}
+void makeData(DATA data[], FILE* in)
+{
+    int pos = 0;
+    while (!feof(in))
+    {
+        char str[SIZE] = { 0 };
+        fgets(data[pos].eq, SIZE, in);
+        clear(str);
+        int varPos = 0;
+        while (!feof(in))
+        {
+            fgets(str, SIZE, in);
+            if (strlen(str) == 1) break;
+            sscanf(str, "%s = %lf\n", &data[pos].variables[varPos].varName, &data[pos].variables[varPos].varVal);
+            clear(str);
+            varPos++;
+        }
+        data[pos].varCount = varPos;
+        pos++;
+        varPos = 0;
+    }
+}
 
 void clear(char* str)
 {
@@ -64,7 +71,7 @@ void clear(char* str)
 int main()
 {
     char math[SIZE] = { 0 }, pol[SIZE] = { 0 };
-    STACK opr; // STACK
+    STACK opr;
     memset(opr.data, 0, sizeof(SIZE));
     opr.pos = 0;
     char nums[SIZE] = { 0 };
