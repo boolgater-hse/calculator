@@ -1,5 +1,5 @@
 #pragma once
-#define SIZE 101
+#define SIZE 150
 
 typedef struct _stack
 {

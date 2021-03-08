@@ -1,10 +1,11 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
 #include "stack.h"
 
-#define SIZE 101
+#define SIZE 150
 
 typedef struct var
 {
@@ -37,6 +38,14 @@ int priority(int symb)
     return 0;
 }
 
+void clear(char* str)
+{
+    for (int i = strlen(str); i >= 0; --i)
+    {
+        str[i] = '\0';
+    }
+}
+
 int makeData(DATA data[], FILE* in)
 {
     int pos = 0;
@@ -50,7 +59,7 @@ int makeData(DATA data[], FILE* in)
         {
             fgets(str, SIZE, in);
             if (strlen(str) == 1) break;
-            sscanf(str, "%s = %s\n", &data[pos].variables[varPos].varName, &data[pos].variables[varPos].varVal);
+            sscanf(str, "%s = %s\n", data[pos].variables[varPos].varName, data[pos].variables[varPos].varVal);
             clear(str);
             varPos++;
         }
@@ -59,14 +68,6 @@ int makeData(DATA data[], FILE* in)
         varPos = 0;
     }
     return pos;
-}
-
-void clear(char* str)
-{
-    for (int i = strlen(str); i >= 0; --i)
-    {
-        str[i] = '\0';
-    }
 }
 
 int main()
@@ -90,7 +91,7 @@ int main()
 
         strcpy(data[inputCount].eq, math);
         printf("%d) ", inputCount + 1);
-        
+
         for (int i = 0; i < strlen(math); ++i)
         {
             if (math[i] >= '0' && math[i] <= '9' || math[i] >= 'a' && math[i] <= 'z' || math[i] == '.' || math[i] == '-' && math[i - 1] == ' ')
@@ -169,11 +170,68 @@ int main()
             }
             pop(&opr);
         }
-        printf("%s\n", pol);
-
-        printf("Result:\n");
 
         pos = 0;
         int subPos = 0;
+
+        ////<--------------------CALCULATION-------------------->////
+
+        FILE* out = fopen("output.txt", "w");
+
+        for (int i = 0; i < strlen(pol) - 1; ++i)
+        {
+            if (pol[i] >= '0' && pol[i] <= '9' || pol[i] >= 'a' && pol[i] <= 'z' || pol[i] == '.' || pol[i] == '-' && pol[i + 1] != ' ')
+            {
+                nums[pos++] = pol[i];
+            }
+            for (int check = 0; check < data[0].varCount; ++check)
+            {
+                if (!strcmp(data[0].variables[check].varName, nums))
+                {
+                    clear(nums);
+                    strcpy(nums, data[0].variables[check].varVal);
+                    break;
+                }
+            }
+            if (pol[i] == ' ' && pol[i - 1] != '+' && pol[i - 1] != '-' && pol[i - 1] != '*' && pol[i - 1] != '/' && pol[i - 1] != '*' && pol[i - 1] != '^')
+            {
+                ans[subPos++] = atof(nums);
+                clear(nums);
+                pos = 0;
+            }
+            if (pol[i] == '+' || pol[i] == '-' && pol[i + 1] == ' ' || pol[i] == '*' || pol[i] == '/' || pol[i] == '^')
+            {
+                switch (pol[i])
+                {
+                case '+':
+                    ans[subPos - 2] = ans[subPos - 2] + ans[subPos - 1];
+                    subPos--;
+                    break;
+                case '-':
+                    ans[subPos - 2] = ans[subPos - 2] - ans[subPos - 1];
+                    subPos--;
+                    break;
+                case '*':
+                    ans[subPos - 2] = ans[subPos - 2] * ans[subPos - 1];
+                    subPos--;
+                    break;
+                case '/':
+                    ans[subPos - 2] = ans[subPos - 2] / ans[subPos - 1];
+                    subPos--;
+                    break;
+                case '^':
+                    ans[subPos - 2] = pow(ans[subPos - 2], ans[subPos - 1]);
+                    subPos--;
+                    break;
+                }
+            }
+        }
+        if (subPos == 0)
+        {
+            ans[subPos++] = atof(nums);
+            clear(nums);
+            pos = 0;
+        }
+        fprintf(out, "%d) %.4f\n", inputCount, ans[0]);
     }
 }
