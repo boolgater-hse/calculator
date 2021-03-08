@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define SIZE 100
+#define SIZE 50
 #define SIZE_LOW 10
 
 typedef struct var
