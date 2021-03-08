@@ -38,7 +38,7 @@ int priority(int symb)
     }
     return 0;
 }
-
+// hello
 void clear(char* str)
 {
     for (int i = strlen(str); i >= 0; --i)
