@@ -1,11 +1,12 @@
 #define _CRT_SECURE_NO_WARNINGS
+#include "stack.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
-#include "stack.h"
 
-#define SIZE 150
+#define SIZE 50
+#define SIZE_LOW 10
 
 typedef struct var
 {
@@ -59,7 +60,7 @@ int makeData(DATA data[], FILE* in)
         {
             fgets(str, SIZE, in);
             if (strlen(str) == 1) break;
-            sscanf(str, "%s = %s\n", data[pos].variables[varPos].varName, data[pos].variables[varPos].varVal);
+            sscanf(str, "%s = %s", data[pos].variables[varPos].varName, data[pos].variables[varPos].varVal);
             clear(str);
             varPos++;
         }
@@ -73,24 +74,23 @@ int makeData(DATA data[], FILE* in)
 int main()
 {
     FILE* in = fopen("input.txt", "r");
+    FILE* out = fopen("output.txt", "w");
     DATA data[SIZE];
     int dataAmount = makeData(data, in);
-    fclose(in);
 
     ////<--------------------POLISH-------------------->////
 
     for (int inputCount = 0; inputCount < dataAmount; ++inputCount)
     {
         char math[SIZE] = { 0 }, pol[SIZE] = { 0 };
-        char nums[SIZE] = { 0 };
+        char nums[SIZE_LOW] = { 0 };
         double ans[SIZE] = { 0 };
         STACK opr;
-        memset(opr.data, 0, sizeof(SIZE));
+        memset(opr.data, 0, sizeof(SIZE_STACK));
         opr.pos = 0;
         int pos = 0;
 
-        strcpy(data[inputCount].eq, math);
-        printf("%d) ", inputCount + 1);
+        strcpy(math, data[inputCount].eq);
 
         for (int i = 0; i < strlen(math); ++i)
         {
@@ -163,6 +163,10 @@ int main()
         }
         while (!(isEmpty(&opr)))
         {
+            if (pol[pos - 1] != ' ')
+            {
+                pol[pos++] = ' ';
+            }
             pol[pos++] = peek(&opr);
             if (pol[pos - 1] != ' ')
             {
@@ -176,20 +180,18 @@ int main()
 
         ////<--------------------CALCULATION-------------------->////
 
-        FILE* out = fopen("output.txt", "w");
-
         for (int i = 0; i < strlen(pol) - 1; ++i)
         {
             if (pol[i] >= '0' && pol[i] <= '9' || pol[i] >= 'a' && pol[i] <= 'z' || pol[i] == '.' || pol[i] == '-' && pol[i + 1] != ' ')
             {
                 nums[pos++] = pol[i];
             }
-            for (int check = 0; check < data[0].varCount; ++check)
+            for (int check = 0; check < data[inputCount].varCount; ++check)
             {
-                if (!strcmp(data[0].variables[check].varName, nums))
+                if (!strcmp(data[inputCount].variables[check].varName, nums))
                 {
                     clear(nums);
-                    strcpy(nums, data[0].variables[check].varVal);
+                    strcpy(nums, data[inputCount].variables[check].varVal);
                     break;
                 }
             }
@@ -232,6 +234,8 @@ int main()
             clear(nums);
             pos = 0;
         }
-        fprintf(out, "%d) %.4f\n", inputCount, ans[0]);
+        fprintf(out, "%d) %.4f\n", inputCount+1, ans[0]);
     }
+    fclose(in);
+    fclose(out);
 }

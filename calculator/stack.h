@@ -1,9 +1,9 @@
 #pragma once
-#define SIZE 150
+#define SIZE_STACK 20
 
 typedef struct _stack
 {
-    char data[SIZE];
+    char data[SIZE_STACK];
     int pos;
 } STACK;
 

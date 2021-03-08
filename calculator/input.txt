@@ -8,10 +8,31 @@ asd = -2.5
 x3 = 10
 hello = 0
 
-aaaa-(95*oof)^89/(55^51)
-oof = 10
-aaaa = 39.355
-
 (98*ttta+xxx)*82+(20/8)
 ttta = 39.5
 xxx = -92.2
+
+-aaaa-(95*oof)^2/(3^2)
+oof = 10
+aaaa = 39.355
+
+16^(1/2)
+
+(57-is)^(86/52)-working/well
+is = 28.3453
+working = 51.3001
+well = 93.3
+
+2+2
+
+2-2
+
+2*2
+
+2/4
+
+-5+ -10- -333
+
+2^pow^test
+pow = 2
+test = 2
