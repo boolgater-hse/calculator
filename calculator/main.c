@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define SIZE 50
+#define SIZE 100
 #define SIZE_LOW 10
 
 typedef struct var
@@ -234,7 +234,7 @@ int main()
             clear(nums);
             pos = 0;
         }
-        fprintf(out, "%d) %.4f\n", inputCount+1, ans[0]);
+        fprintf(out, "%d) %.10f\n", inputCount+1, ans[0]);
     }
     fclose(in);
     fclose(out);
