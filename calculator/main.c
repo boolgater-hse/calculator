@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define SIZE 50
+#define SIZE 70
 #define SIZE_LOW 10
 
 typedef struct var
@@ -52,7 +52,7 @@ int makeData(DATA data[], FILE* in)
     int pos = 0;
     while (!feof(in))
     {
-        char str[SIZE] = { 0 };
+        char str[SIZE] = {0};
         fgets(data[pos].eq, SIZE, in);
         clear(str);
         int varPos = 0;
@@ -80,9 +80,9 @@ int main()
 
     for (int inputCount = 0; inputCount < dataAmount; ++inputCount)
     {
-        char math[SIZE] = { 0 }, pol[SIZE] = { 0 };
-        char nums[SIZE_LOW] = { 0 };
-        double ans[SIZE] = { 0 };
+        char math[SIZE] = {0}, pol[SIZE] = {0};
+        char nums[SIZE_LOW] = {0};
+        double ans[SIZE] = {0};
         STACK opr;
         memset(opr.data, 0, sizeof(SIZE_STACK));
         opr.pos = 0;
@@ -238,4 +238,5 @@ int main()
     }
     fclose(in);
     fclose(out);
+    printf("Done");
 }
