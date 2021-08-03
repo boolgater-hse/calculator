@@ -218,6 +218,11 @@ int main()
 						subPos--;
 						break;
 					case '/':
+					    if (ans[subPos - 1] == 0)
+                        {
+                            fprintf(out, "%d) Error: division by zero\n", inputCount+1);
+                            goto skip;
+                        }
 						ans[subPos - 2] = ans[subPos - 2] / ans[subPos - 1];
 						subPos--;
 						break;
@@ -235,6 +240,7 @@ int main()
 			pos = 0;
 		}
 		fprintf(out, "%d) %.10f\n", inputCount+1, ans[0]);
+        skip: continue;
     }
     fclose(in);
     fclose(out);
