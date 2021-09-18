@@ -80,17 +80,17 @@ int main()
 
     for (int inputCount = 0; inputCount < dataAmount; ++inputCount)
     {
-		char math[SIZE] = {0}, pol[SIZE] = {0};
+        char math[SIZE] = {0}, pol[SIZE] = {0};
         char nums[SIZE_LOW] = {0};
         double ans[SIZE] = {0};
         STACK opr;
-		memset(opr.data, 0, sizeof(SIZE_STACK));
-		opr.pos = 0;
+        memset(opr.data, 0, sizeof(SIZE_STACK));
+        opr.pos = 0;
         int pos = 0;
-		
-		strcpy(math, data[inputCount].eq);
+        
+        strcpy(math, data[inputCount].eq);
 
-		////<------------------POLISH NOTATION------------------>////
+        ////<------------------POLISH NOTATION------------------>////
 
         for (int i = 0; i < strlen(math); ++i)
         {
@@ -177,69 +177,69 @@ int main()
 
         pos = 0;
         int subPos = 0;
-		
-		////<--------------------CALCULATION-------------------->////
-		
-		for (int i = 0; i < strlen(pol) - 1; ++i)
-		{
-			if (pol[i] >= '0' && pol[i] <= '9' || pol[i] >='a' && pol[i] <= 'z' || pol[i] == '.' || pol[i] == '-' && pol[i + 1] != ' ')
-			{
-				nums[pos++] = pol[i];
-			}
-			for (int check = 0; check < data[inputCount].varCount; ++check)
-			{
-				if (!strcmp(data[inputCount].variables[check].varName, nums))
-				{
-					clear(nums);
-					strcpy(nums, data[inputCount].variables[check].varVal);
-					break;
-				}
-			}
-			if (pol[i] == ' ' && pol[i - 1] != '+' && pol[i - 1] != '-' && pol[i - 1] != '*' && pol[i - 1] != '/' && pol[i - 1] != '^')
-			{
-				ans[subPos++] = atof(nums);
-				clear(nums);
-				pos = 0;
-			}
-			if (pol[i] == '+' || pol[i] == '-' && pol[i + 1] == ' ' || pol[i] == '*' || pol[i] == '/' || pol[i] == '^')
-			{
-				switch (pol[i])
-				{
-					case '+':
-						ans[subPos - 2] = ans[subPos - 2] + ans[subPos - 1];
-						subPos--;
-						break;
-					case '-':
-						ans[subPos - 2] = ans[subPos - 2] - ans[subPos - 1];
-						subPos--;
-						break;
-					case '*':
-						ans[subPos - 2] = ans[subPos - 2] * ans[subPos - 1];
-						subPos--;
-						break;
-					case '/':
-					    if (ans[subPos - 1] == 0)
+        
+        ////<--------------------CALCULATION-------------------->////
+        
+        for (int i = 0; i < strlen(pol) - 1; ++i)
+        {
+            if (pol[i] >= '0' && pol[i] <= '9' || pol[i] >='a' && pol[i] <= 'z' || pol[i] == '.' || pol[i] == '-' && pol[i + 1] != ' ')
+            {
+                nums[pos++] = pol[i];
+            }
+            for (int check = 0; check < data[inputCount].varCount; ++check)
+            {
+                if (!strcmp(data[inputCount].variables[check].varName, nums))
+                {
+                    clear(nums);
+                    strcpy(nums, data[inputCount].variables[check].varVal);
+                    break;
+                }
+            }
+            if (pol[i] == ' ' && pol[i - 1] != '+' && pol[i - 1] != '-' && pol[i - 1] != '*' && pol[i - 1] != '/' && pol[i - 1] != '^')
+            {
+                ans[subPos++] = atof(nums);
+                clear(nums);
+                pos = 0;
+            }
+            if (pol[i] == '+' || pol[i] == '-' && pol[i + 1] == ' ' || pol[i] == '*' || pol[i] == '/' || pol[i] == '^')
+            {
+                switch (pol[i])
+                {
+                    case '+':
+                        ans[subPos - 2] = ans[subPos - 2] + ans[subPos - 1];
+                        subPos--;
+                        break;
+                    case '-':
+                        ans[subPos - 2] = ans[subPos - 2] - ans[subPos - 1];
+                        subPos--;
+                        break;
+                    case '*':
+                        ans[subPos - 2] = ans[subPos - 2] * ans[subPos - 1];
+                        subPos--;
+                        break;
+                    case '/':
+                        if (ans[subPos - 1] == 0)
                         {
                             fprintf(out, "%d) Error: division by zero\n", inputCount+1);
                             goto skip;
                         }
-						ans[subPos - 2] = ans[subPos - 2] / ans[subPos - 1];
-						subPos--;
-						break;
-					case '^':
-						ans[subPos - 2] = pow(ans[subPos - 2], ans[subPos - 1]);
-						subPos--;
-						break;		
-				}
-			}
-		}
-		if (subPos == 0)
-		{
-			ans[subPos++] = atof(nums);
-			clear(nums);
-			pos = 0;
-		}
-		fprintf(out, "%d) %.10f\n", inputCount+1, ans[0]);
+                        ans[subPos - 2] = ans[subPos - 2] / ans[subPos - 1];
+                        subPos--;
+                        break;
+                    case '^':
+                        ans[subPos - 2] = pow(ans[subPos - 2], ans[subPos - 1]);
+                        subPos--;
+                        break;        
+                }
+            }
+        }
+        if (subPos == 0)
+        {
+            ans[subPos++] = atof(nums);
+            clear(nums);
+            pos = 0;
+        }
+        fprintf(out, "%d) %.10f\n", inputCount+1, ans[0]);
         skip: continue;
     }
     fclose(in);
