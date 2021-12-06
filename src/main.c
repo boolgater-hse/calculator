@@ -1,40 +1,38 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include "stack.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include "stack.h"
 
-#define SIZE 70
-#define SIZE_LOW 10
+#define SIZE 1024
 
 typedef struct var
 {
-    char varName[SIZE];
-    char varVal[SIZE];
+    char* varName;
+    char* varVal;
 } VAR;
 
 typedef struct data
 {
-    char eq[SIZE];
-    VAR variables[SIZE];
+    char* eq;
+    VAR* variables;
     int varCount;
 } DATA;
 
-int priority(int symb)
+int priority(int c)
 {
-    switch (symb)
+    switch (c)
     {
-    case '+':
-        return 1;
-    case '-':
-        return 1;
-    case '*':
-        return 2;
-    case '/':
-        return 2;
-    case '^':
-        return 3;
+        case '+':
+            return 1;
+        case '-':
+            return 1;
+        case '*':
+            return 2;
+        case '/':
+            return 2;
+        case '^':
+            return 3;
     }
     return 0;
 }
@@ -47,19 +45,22 @@ void clear(char* str)
     }
 }
 
-int makeData(DATA data[], FILE* in)
+int makeData(DATA* data, FILE* in)
 {
     int pos = 0;
     while (!feof(in))
     {
-        char str[SIZE] = {0};
+        char* str = calloc(SIZE, sizeof(char));
         fgets(data[pos].eq, SIZE, in);
         clear(str);
         int varPos = 0;
         while (!feof(in))
         {
             fgets(str, SIZE, in);
-            if (strlen(str) == 1) break;
+            if (strlen(str) == 1)
+            {
+                break;
+            }
             sscanf(str, "%s = %s", data[pos].variables[varPos].varName, data[pos].variables[varPos].varVal);
             clear(str);
             varPos++;
@@ -67,6 +68,7 @@ int makeData(DATA data[], FILE* in)
         data[pos].varCount = varPos;
         pos++;
         varPos = 0;
+        free(str);
     }
     return pos;
 }
@@ -75,26 +77,39 @@ int main()
 {
     FILE* in = fopen("../data/input.txt", "r");
     FILE* out = fopen("../data/output.txt", "w");
-    DATA data[SIZE];
+    DATA* data = calloc(SIZE, sizeof(DATA));
+    for (int i = 0; i < SIZE; ++i)
+    {
+        data[i].eq = calloc(SIZE, sizeof(char));
+        data[i].variables = calloc(SIZE, sizeof(VAR));
+        for (int j = 0; j < SIZE; ++j)
+        {
+            data[i].variables[j].varName = calloc(SIZE, sizeof(char));
+            data[i].variables[j].varVal = calloc(SIZE, sizeof(char));
+        }
+    }
     int dataAmount = makeData(data, in);
 
     for (int inputCount = 0; inputCount < dataAmount; ++inputCount)
     {
-        char math[SIZE] = {0}, pol[SIZE] = {0};
-        char nums[SIZE_LOW] = {0};
-        double ans[SIZE] = {0};
+        char* math = calloc(SIZE, sizeof(char));
+        char* pol = calloc(SIZE, sizeof(char));
+        char* nums = calloc(SIZE, sizeof(char));
+        double* ans = calloc(SIZE, sizeof(char));
         STACK opr;
+
         memset(opr.data, 0, sizeof(SIZE_STACK));
         opr.pos = 0;
         int pos = 0;
-        
+
         strcpy(math, data[inputCount].eq);
 
         ////<------------------POLISH NOTATION------------------>////
 
         for (int i = 0; i < strlen(math); ++i)
         {
-            if (math[i] >= '0' && math[i] <= '9' || math[i] >= 'a' && math[i] <= 'z' || math[i] == '.' || math[i] == '-' && math[i - 1] == ' ')
+            if (math[i] >= '0' && math[i] <= '9' || math[i] >= 'a' && math[i] <= 'z' || math[i] == '.' ||
+                math[i] == '-' && math[i - 1] == ' ')
             {
                 pol[pos++] = math[i];
                 continue;
@@ -177,12 +192,13 @@ int main()
 
         pos = 0;
         int subPos = 0;
-        
+
         ////<--------------------CALCULATION-------------------->////
-        
+
         for (int i = 0; i < strlen(pol) - 1; ++i)
         {
-            if (pol[i] >= '0' && pol[i] <= '9' || pol[i] >='a' && pol[i] <= 'z' || pol[i] == '.' || pol[i] == '-' && pol[i + 1] != ' ')
+            if (pol[i] >= '0' && pol[i] <= '9' || pol[i] >= 'a' && pol[i] <= 'z' || pol[i] == '.' ||
+                pol[i] == '-' && pol[i + 1] != ' ')
             {
                 nums[pos++] = pol[i];
             }
@@ -195,7 +211,8 @@ int main()
                     break;
                 }
             }
-            if (pol[i] == ' ' && pol[i - 1] != '+' && pol[i - 1] != '-' && pol[i - 1] != '*' && pol[i - 1] != '/' && pol[i - 1] != '^')
+            if (pol[i] == ' ' && pol[i - 1] != '+' && pol[i - 1] != '-' && pol[i - 1] != '*' && pol[i - 1] != '/' &&
+                pol[i - 1] != '^')
             {
                 ans[subPos++] = atof(nums);
                 clear(nums);
@@ -220,8 +237,7 @@ int main()
                     case '/':
                         if (ans[subPos - 1] == 0)
                         {
-                            fprintf(out, "%d) Error: division by zero\n", inputCount+1);
-                            goto skip;
+                            break;
                         }
                         ans[subPos - 2] = ans[subPos - 2] / ans[subPos - 1];
                         subPos--;
@@ -229,21 +245,37 @@ int main()
                     case '^':
                         ans[subPos - 2] = pow(ans[subPos - 2], ans[subPos - 1]);
                         subPos--;
-                        break;        
+                        break;
                 }
             }
         }
-        if (subPos == 0)
+        if (subPos != 1)
         {
-            ans[subPos++] = atof(nums);
-            clear(nums);
-            pos = 0;
+            fprintf(out, "%d) Error: division by zero\n", inputCount + 1);
         }
-        fprintf(out, "%d) %.10f\n", inputCount+1, ans[0]);
-        skip: continue;
+        else
+        {
+            fprintf(out, "%d) %.10f\n", inputCount + 1, ans[0]);
+        }
+
+        free(math);
+        free(pol);
+        free(nums);
+        free(ans);
     }
     fclose(in);
     fclose(out);
+    for (int i = 0; i < SIZE; ++i)
+    {
+        for (int j = 0; j < SIZE; ++j)
+        {
+            free(data[i].variables[j].varName);
+            free(data[i].variables[j].varVal);
+        }
+        free(data[i].eq);
+        free(data[i].variables);
+    }
+    free(data);
     printf("Done");
     return 0;
 }
