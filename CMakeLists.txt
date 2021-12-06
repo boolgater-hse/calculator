@@ -1,12 +1,14 @@
-# system
 cmake_minimum_required(VERSION 3.20)
+
+project(calculator C)
 set(CMAKE_C_STANDARD 11)
 
-# project
-project(calculator C)
+include_directories(include)
 
-# sources
-set(source_files src/main.c)
+set(SOURCE_FILES src/main.c src/stack.c)
+set(HEADER_FILES include/stack.h)
 
-# build
-add_executable(${PROJECT_NAME} src/main.c src/stack.c src/stack.h)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
+if (UNIX)
+    target_link_libraries(${PROJECT_NAME} m)
+endif(UNIX)
